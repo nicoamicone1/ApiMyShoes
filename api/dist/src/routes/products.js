@@ -14,9 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Product_1 = __importDefault(require("../models/Product"));
+const authJwt_1 = require("../middlewares/authJwt");
 const route = (0, express_1.Router)();
 // ********* GET products *********
-route.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+route.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const AllProducts = yield Product_1.default.find();
         res.status(200).json(AllProducts);
@@ -26,7 +27,7 @@ route.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* (
     }
 }));
 // ********* GET product by id *********
-route.get("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+route.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const product = yield Product_1.default.findById(req.params.id);
         if (product)
@@ -39,7 +40,7 @@ route.get("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 // ********* POST product *********
-route.post("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+route.post("/", authJwt_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, description, price, image_url } = req.body;
         const newProduct = new Product_1.default({ name, description, price, image_url });
@@ -51,7 +52,7 @@ route.post("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* 
     }
 }));
 // ********* PUT product *********
-route.put("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+route.put("/:id", authJwt_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, description, price, image_url } = req.body;
         yield Product_1.default.findByIdAndUpdate(req.params.id, { name, description, price, image_url });
@@ -63,7 +64,7 @@ route.put("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function
     }
 }));
 // ********* DELETE product *********
-route.delete("/:id", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+route.delete("/:id", authJwt_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Product_1.default.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "Product deleted successfully" });
