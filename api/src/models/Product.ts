@@ -15,9 +15,13 @@ const productSchema=new Schema({
         required:true
     },
     image_url:{
-        type:String,
+        type:Array,
         required:true
     },
+    brand:{
+        type: Schema.Types.ObjectId,
+        ref: 'Brand'
+    }
 })
 
 const Product=model("Product",productSchema)

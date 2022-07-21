@@ -9,10 +9,6 @@ const brandSchema=new Schema({
     logo_url:{
         type:String,
         required:true 
-    },
-    product:{
-        type: Schema.Types.ObjectId,
-        ref: 'Product'
     }
 })
 
