@@ -26,14 +26,14 @@ const comparePasswords = (receivedPassword, savedPassword) => __awaiter(void 0, 
     return yield bcrypt.compare(receivedPassword, savedPassword);
 });
 const signUp = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, username, password } = req.body;
+    const { username, password } = req.body;
     try {
         const found = yield User_1.default.find({ username });
         if (found.length > 0) {
             res.send('There is an account already created with this username');
         }
         else {
-            const user = new User_1.default({ name, username, password: yield encryptPassword(password) });
+            const user = new User_1.default({ username, password: yield encryptPassword(password) });
             yield user.save();
             res.json({ message: "Successfully registered" });
         }
@@ -48,10 +48,10 @@ const logIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const { username, password } = req.body;
         const found = yield User_1.default.findOne({ username });
         if (!found)
-            return res.status(404).json({ message: "User not found" });
+            return res.json({ message: "User not found" });
         const match = yield comparePasswords(password, found.password);
         if (!match) {
-            res.json({ message: 'passwords do not match' });
+            res.json({ message: 'Passwords do not match' });
         }
         else {
             const token = jsonwebtoken_1.default.sign({ id: found._id }, `${process.env.JWT_SECRET}`, { expiresIn: 86400 });

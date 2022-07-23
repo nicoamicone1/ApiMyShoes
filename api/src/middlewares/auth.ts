@@ -17,7 +17,7 @@ const comparePasswords = async (receivedPassword:string, savedPassword:string) =
 }
 
 export const signUp = async (req:Request, res:Response, next:NextFunction) => {
-    const { name, username, password } = req.body
+    const { username, password } = req.body
 
     try {
         const found = await User.find({ username });
@@ -25,7 +25,7 @@ export const signUp = async (req:Request, res:Response, next:NextFunction) => {
             res.send('There is an account already created with this username')
         } else {
 
-            const user=new User({name, username, password: await encryptPassword(password) });
+            const user=new User({ username, password: await encryptPassword(password) });
             await user.save()
             res.json({message:"Successfully registered"})
         }
@@ -41,12 +41,12 @@ export const logIn = async (req:Request, res:Response) => {
         const { username,password } = req.body
         const found = await User.findOne({ username })
 
-        if(!found)return res.status(404).json({message:"User not found"})
+        if(!found)return res.json({message:"User not found"})
 
         const match=await comparePasswords(password,found!.password)
 
         if(!match){
-            res.json({message: 'passwords do not match'});
+            res.json({message: 'Passwords do not match'});
         }
         else{
             const token = jwt.sign({ id: found!._id },`${process.env.JWT_SECRET}`, { expiresIn: 86400 })
