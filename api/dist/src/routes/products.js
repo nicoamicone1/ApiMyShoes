@@ -41,7 +41,7 @@ route.get("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 }));
 // ********* POST product *********
-route.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+route.post("/", authJwt_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { name, description, price, image_url, brand, logo_url } = req.body;
         const newProduct = new Product_1.default({ name, description, price, image_url });
@@ -57,7 +57,7 @@ route.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         res.status(200).json("Product created successfully");
     }
     catch (error) {
-        res.status(404).json({ message: "Product could not be created" });
+        res.json({ message: "Product could not be created" });
     }
 }));
 // ********* PUT product *********
@@ -73,13 +73,13 @@ route.put("/:id", authJwt_1.verifyToken, (req, res) => __awaiter(void 0, void 0,
     }
 }));
 // ********* DELETE product *********
-route.delete("/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+route.delete("/:id", authJwt_1.verifyToken, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield Product_1.default.findByIdAndDelete(req.params.id);
         res.status(200).json({ message: "Product deleted successfully" });
     }
     catch (error) {
-        res.status(404).json({ message: "Product could not be deleted" });
+        res.status(200).json({ message: "Product could not be deleted" });
     }
 }));
 exports.default = route;

@@ -30,7 +30,7 @@ route.get("/:id",async(req:Request,res:Response)=>{
 })
 
 // ********* POST product *********
-route.post("/",async(req:Request,res:Response)=>{
+route.post("/",verifyToken,async(req:Request,res:Response)=>{
     try {
         const {name,description,price,image_url,brand,logo_url}=req.body
         const newProduct=new Product({name,description,price,image_url})
@@ -44,7 +44,7 @@ route.post("/",async(req:Request,res:Response)=>{
         await newProduct.save()
         res.status(200).json("Product created successfully")
     } catch (error) {
-        res.status(404).json({message:"Product could not be created"})
+        res.json({message:"Product could not be created"})
     }
 })
 
@@ -61,12 +61,12 @@ route.put("/:id",verifyToken,async(req:Request,res:Response)=>{
 })
 
 // ********* DELETE product *********
-route.delete("/:id",async(req:Request,res:Response)=>{
+route.delete("/:id",verifyToken,async(req:Request,res:Response)=>{
     try {
         await Product.findByIdAndDelete(req.params.id)
         res.status(200).json({message:"Product deleted successfully"})
     } catch (error) {
-        res.status(404).json({message:"Product could not be deleted"})
+        res.status(200).json({message:"Product could not be deleted"})
     }
 })
 
