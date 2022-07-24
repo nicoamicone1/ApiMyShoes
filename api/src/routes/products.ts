@@ -33,6 +33,7 @@ route.get("/:id",async(req:Request,res:Response)=>{
 route.post("/",verifyToken,async(req:Request,res:Response)=>{
     try {
         const {name,description,price,image_url,brand,logo_url}=req.body
+        if(image_url.length!==4)return res.json({message:"Product could not be created"})
         const newProduct=new Product({name,description,price,image_url})
         const brandfound=await Brand.findOne({name:brand})
         if(brandfound)newProduct.brand=brandfound._id
